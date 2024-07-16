@@ -1,15 +1,16 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './interface/user';
-import { UserDto, UserParamsDto } from './interface/dto/user.dto';
-
-@Controller('user')
+import {  UserParamsDto } from './dto/user.dto';
+import { Request, Response } from 'express';
+@Controller('users')
 export class UserController {
   constructor(private readonly userService:UserService) {}
 
   @Get()
-  getUsers(): User[] {
+  async getUsers( @Req() res: Request): Promise<User[]> {
+    console.log(res.body);
     return this.userService.getUsers();
   }
   @Get('/:email')
@@ -19,8 +20,9 @@ export class UserController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  postUser(@Body() user:User): UserDto {
-    return this.userService.addUser(user)
+  postUser(@Body() user:User , @Res() res : Response) {
+     this.userService.addUser(user);
+     res.status(201).send()
   }
 
   @Delete('/:email')

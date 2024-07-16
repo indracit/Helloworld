@@ -7,7 +7,7 @@ export class UserService {
 
     public users: User[] =[];
 
-  getUsers(): User[] {
+  async getUsers(): Promise<User[]> {
     return this.users;
   }
 
